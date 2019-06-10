@@ -1,4 +1,4 @@
-# react-express-author search
+# react-express-author-search
 Search for a book by its title and get the author's name back.
 
 ## Built with

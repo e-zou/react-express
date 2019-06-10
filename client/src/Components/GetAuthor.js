@@ -7,21 +7,13 @@ export default class GetTitle extends React.Component {
         this.state = {
             author: '',
             query: '',
-            results : {title : '', author : ''}
+            results : []
         }
     }
 
-    getAuthor = (title) => {
-        axios.get('/book/' + title).then(
-            res => {
-            this.setState({author : res.data})
-            // console.log(res.data)
-        }) // requests info from server.js
-        this.updateQuery(this.state.query);
-    }
-
+    // Calls API to get author
     callGoogleAPI() {
-        let link = "/googlebooks/" + this.state.query;
+        let link = "/book?title=" + this.state.query;
         axios.get(link).then(
             (res) => {
                 console.log(res.data);
@@ -32,28 +24,16 @@ export default class GetTitle extends React.Component {
         )
     }
 
-    searchClicked = () => {
+    // Handles change
+    updateQuery = (e) => {
+        this.setState({ query : e.target.value})
+    }
+
+    // Handles submission on click or enter
+    submitQuery = (e) => {
+        e.preventDefault();
         this.callGoogleAPI();
     }
-
-    updateQuery = (input) => {
-        this.setState({ query : input})
-    }
-
-    submitQuery = (event) => {
-        event.preventDefault();
-        this.callGoogleAPI();
-        this.updateQuery(this.state.query);
-        
-    }
-
-    // getMessage = () => {
-    //     axios.get('http://localhost:5000/hello').then(
-    //         res => {
-    //         this.setState({message : res.message})
-    //         console.log(res)
-    //     })
-    // }
 
     render() {
         console.log(this.state.query);
@@ -61,10 +41,13 @@ export default class GetTitle extends React.Component {
             <div>
                 <h1>Author Search</h1>
                 <form onSubmit={this.submitQuery}>
-                    <input onChange = {(e) => {this.updateQuery(e.target.value)}} value={this.state.query} placeholder="Search..."/>
-                    <button onClick = {() => this.getAuthor(this.state.query)}>Button</button>
+                    <input onChange = {this.updateQuery} value={this.state.query} placeholder="Search..."/>
+                    <button onClick = {this.submitQuery}>Button</button>
                 </form>
-                <p>{this.state.author}</p>
+                <img src={this.state.results.image}/>
+                <p>{this.state.results.title}</p>
+                <p>{this.state.results.author}</p>
+                
             </div>
 
         );
